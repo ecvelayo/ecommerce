@@ -5,28 +5,37 @@ const instance = require("../../../dbconnection");
 const product = instance.sequelize.define("products", {
     id: {
         primaryKey: true,
-        type: DataTypes.BIGINT
+        autoIncrement: true,
+        type: DataTypes.BIGINT,
+        allowNull: false
       },
       merchantId: {
-        type: DataTypes.BIGINT
+        type: DataTypes.BIGINT,
+        allowNull: false
       },
       sku: {
-        type: DataTypes.STRING
+        type: DataTypes.STRING,
+        unique: true
       },
       productName: {
-        type: DataTypes.STRING
+        type: DataTypes.STRING,
+        allowNull: false
       },
       productDescription: {
-        type: DataTypes.STRING
+        type: DataTypes.STRING,
+        allowNull: false
       },
       productPrimaryImage: {
-        type: DataTypes.STRING
+        type: DataTypes.STRING,
+        allowNull: false
       },
       productImages: {
-        type: DataTypes.TEXT
+        type: DataTypes.TEXT,
+        allowNull: false
       },
       status: {
-        type: DataTypes.STRING
+        type: DataTypes.STRING,
+        allowNull: false
       }
     },
     {

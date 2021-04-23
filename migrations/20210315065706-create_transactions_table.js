@@ -19,10 +19,6 @@ module.exports = {
         type: Sequelize.BIGINT,
         allowNull: false
       },
-      companyId: {
-        type: Sequelize.BIGINT,
-        allowNull: false
-      },
       branchId: {
         type: Sequelize.BIGINT,
         allowNull: false
