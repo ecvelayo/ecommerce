@@ -1,16 +1,10 @@
-const model = require("../models/productModel").model;
-const generateCode = require("../../gencode/codegen").generateCode;
+const model = require("../models/transactionModel").model;
 // const Sequelize = require("sequelize")
 
 exports.create = async (req, res) => {
     try{
-        //create SKU based on Merchant ID and Name
-        if (typeof req.body.sku === 'undefined'){
-            req.body.sku = await generateCode("10", "numeric", model, "sku");
-        }
         model.create(req.body)
         .then((data)=>{
-            //returns inserted data with all fields
             res.send(data);
         }).catch((err)=>{
             res.send(err)
@@ -119,33 +113,3 @@ exports.delete = async (req, res) => {
         res.send(e)
     }
 }
-
-//generate random SKU for barcode purposes
-// generateSKU = async () => {
-//     let sku = "";
-//     const numbers = "1234567890";
-//     const length = 10;
-//     for (var i = 0; i < length; i++){
-//         sku += numbers.charAt(Math.floor(Math.random()*numbers.length));
-//     }
-//     if (checkExists({sku:sku})){
-//         return sku;
-//     }else{
-//         generateSKU();
-//     }
-// }
-
-//checks if SKU already exists
-// checkExists = async (data) => {
-//     let verif = await product.findOne({
-//         where: data,
-//         raw: true
-//     }).then((data)=>{
-//         if (data === null){
-//             return true;
-//         }else{
-//             return false;
-//         }
-//     })
-//     return verif;
-// }

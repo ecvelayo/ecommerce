@@ -1,14 +1,18 @@
-const model = require("../models/productModel").model;
-const generateCode = require("../../gencode/codegen").generateCode;
-// const Sequelize = require("sequelize")
+const model = require("../models/cartModel").model;
+const account = require("../../account/models/accountModel").model;
+
 
 exports.create = async (req, res) => {
     try{
-        //create SKU based on Merchant ID and Name
-        if (typeof req.body.sku === 'undefined'){
-            req.body.sku = await generateCode("10", "numeric", model, "sku");
+        if (req.body.accountId !== "undefined"){
+
         }
-        model.create(req.body)
+        model.findOrCreate({
+            where: {
+                accountId: req.body.accountId
+            },
+            defaults:req.body
+        })
         .then((data)=>{
             //returns inserted data with all fields
             res.send(data);
@@ -37,35 +41,6 @@ exports.readOne = async (req, res) => {
     }
 }
 
-//returns all products under merchant
-exports.readAllMerchantProducts = async (req, res) => {
-    try{
-        const conditions = {where: {merchantId: req.body.merchantId}};
-        if (req.body.limit !== undefined){
-            conditions.limit = req.body.limit;
-        }
-        if (req.body.offset !== undefined){
-            conditions.offset = req.body.offset
-        }
-        if (req.body.order !== undefined){
-            conditions.order = req.body.order
-        }
-        if (req.body.sku !== undefined){
-            conditions.where.sku = req.body.sku
-        } 
-        const products = await model.findAll(
-            conditions
-        ).then((data)=>{
-            return data;
-        }).catch((err)=>{
-            return err;
-        })
-        return products;
-    }catch(e){
-        return e;
-    }
-}
-
 //update based on SKU
 //JSON sent should be on this format
 //{sku: itemSku, updatedValue: values_to_be_updated_in_JSON_format, return: true if you want to return updatedRow, by default is false }
@@ -79,8 +54,6 @@ exports.update = async (req, res) => {
             returning: true,
             plain: true
         }).then(async (updated)=>{
-            //console.log(updated[1]);
-            //res.send({status: updated[1]});
             if (req.body.return){
                 let returnVal = {status: updated[1]};
                 returnVal.updated = await model.findOne({
@@ -119,33 +92,3 @@ exports.delete = async (req, res) => {
         res.send(e)
     }
 }
-
-//generate random SKU for barcode purposes
-// generateSKU = async () => {
-//     let sku = "";
-//     const numbers = "1234567890";
-//     const length = 10;
-//     for (var i = 0; i < length; i++){
-//         sku += numbers.charAt(Math.floor(Math.random()*numbers.length));
-//     }
-//     if (checkExists({sku:sku})){
-//         return sku;
-//     }else{
-//         generateSKU();
-//     }
-// }
-
-//checks if SKU already exists
-// checkExists = async (data) => {
-//     let verif = await product.findOne({
-//         where: data,
-//         raw: true
-//     }).then((data)=>{
-//         if (data === null){
-//             return true;
-//         }else{
-//             return false;
-//         }
-//     })
-//     return verif;
-// }
